@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Design Music Player</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<button class="theme-toggle" aria-label="Toggle dark mode">
+    <i class="material-icons">dark_mode</i>
+</button>
+
+<div class="player-container">
+    <div class="player-header">
+        <h1>Groove Player</h1>
+    </div>
+
+    <div class="player-controls">
+        <audio id="audioPlayer" controls>
+            Your browser does not support the audio element.
+        </audio>
+        <canvas id="visualizer"></canvas>
+    </div>
+
+    <div class="playlist">
+        <h2>Playlist</h2>
+        <ul id="musicList">
+            {{range .musicFiles}}
+            <li class="music-list-item" data-file="/data/music/{{.}}">
+                <i class="material-icons">music_note</i>
+                <span>{{.}}</span>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+</div>
+<script src="/static/AudioPlayer.js"></script>
+</body>
+</html>
