@@ -157,6 +157,7 @@ h1 {
     border-bottom: 1px solid rgba(128, 128, 128, 0.12);
     cursor: pointer;
     transition: background-color 0.2s ease;
+    gap: 16px;  /* Add spacing between flex items */
 }
 
 .music-list-item:hover {
@@ -177,7 +178,71 @@ h1 {
     font-size: 16px;
 }
 
+.music-list-item .song-name {
+    color: var(--mdc-theme-on-surface);
+    font-size: 16px;
+    flex-grow: 1;
+}
+
 /* Dark mode specific audio player styles */
 :root[data-theme="dark"] #audioPlayer {
     filter: invert(100%) hue-rotate(180deg);
+}
+
+.file-upload {
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.12);
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-on-primary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.upload-btn:hover {
+    background-color: var(--dark-secondary);
+}
+
+.delete-btn {
+    background-color: var(--dark-background);
+    cursor: pointer;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    /* Center the icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.delete-btn i {
+    /* Remove any default margins */
+    margin: 0;
+    /* Set the color */
+    color: var(--mdc-theme-on-background);
+    /* Ensure smooth color transition on hover */
+    transition: color 0.2s ease;
+}
+
+.delete-btn:hover {
+    opacity: 1;
+    background-color: rgba(var(--mdc-theme-error), 0.1);
+}
+
+.delete-btn:hover i {
+    color: var(--mdc-theme-error);
 }

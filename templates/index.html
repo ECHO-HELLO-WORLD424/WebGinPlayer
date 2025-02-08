@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Material Design Music Player</title>
+    <title>Web Music Player</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -25,16 +25,36 @@
 
     <div class="playlist">
         <h2>Playlist</h2>
+
+        <div class="file-upload">
+            <input type="file" id="audioFileInput" accept=".wav,.flac" class="file-input" />
+            <label for="audioFileInput" class="upload-btn">
+                <i class="material-icons">upload</i>
+                Upload Music
+            </label>
+        </div>
+
         <ul id="musicList">
             {{range .musicFiles}}
             <li class="music-list-item" data-file="/data/music/{{.}}">
                 <i class="material-icons">music_note</i>
-                <span>{{.}}</span>
+                <span class="song-name">{{.}}</span>
+                <button class="delete-btn" title="Delete">
+                    <i class="material-icons">delete</i>
+                </button>
             </li>
             {{end}}
         </ul>
+
     </div>
 </div>
+<script src="/static/FileManager.js"></script>
 <script src="/static/AudioPlayer.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const musicList = document.getElementById('musicList');
+        new FileManager(musicList);
+    });
+</script>
 </body>
 </html>

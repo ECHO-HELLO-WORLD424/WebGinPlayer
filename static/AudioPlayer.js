@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add click event listeners to playlist items
     musicList.querySelectorAll('.music-list-item').forEach((item) => {
+        // Add click event listener
         item.addEventListener('click', function() {
             const audioFile = this.getAttribute('data-file');
             playTrack(audioFile);
