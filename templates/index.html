@@ -25,13 +25,16 @@
     </div>
 
     <div class="playlist">
-        <h2>Playlist</h2>
-
         <div class="file-upload">
             <input type="file" id="audioFileInput" accept=".wav,.flac" class="file-input" />
             <label for="audioFileInput" class="upload-btn">
                 <i class="material-icons">upload</i>
-                Upload Music
+                Upload Music File
+            </label>
+            <input type="file" id="backgroundInput" class="file-input" accept="image/*">
+            <label for="backgroundInput" class="upload-btn">
+                <i class="material-icons">image</i>
+                Change Background
             </label>
         </div>
 
@@ -49,6 +52,8 @@
 
     </div>
 </div>
+<script src="/static/UIManager.js"></script>
+<script src="/static/BackgroundManager.js"></script>
 <script src="/static/FileManager.js"></script>
 <script src="/static/AudioPlayer.js"></script>
 <script>

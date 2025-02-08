@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	uploadDir = "./assets/music"
+	audioUploadDir = "./assets/music"
+	imageUploadDir = "./assets/image"
 )
 
-func UploadFile(c *gin.Context) {
+func UploadAudioFile(c *gin.Context) {
 	// Get the uploaded file
 	file, err := c.FormFile("audioFile")
 	if err != nil {
@@ -28,14 +29,14 @@ func UploadFile(c *gin.Context) {
 	}
 
 	// Ensure upload directory exists
-	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+	if err := os.MkdirAll(audioUploadDir, 0755); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
 		return
 	}
 
 	// Create the file path
 	filename := filepath.Base(file.Filename)
-	filePrefix := filepath.Join(uploadDir, filename)
+	filePrefix := filepath.Join(audioUploadDir, filename)
 
 	// Save the file
 	if err := c.SaveUploadedFile(file, filePrefix); err != nil {
@@ -49,7 +50,7 @@ func UploadFile(c *gin.Context) {
 	})
 }
 
-func DeleteFile(c *gin.Context) {
+func DeleteAudioFile(c *gin.Context) {
 	filename := c.Param("filename")
 
 	// Validate filename
@@ -66,7 +67,7 @@ func DeleteFile(c *gin.Context) {
 	}
 
 	// Get absolute path for both the upload directory and the target file
-	absUploadDir, err := filepath.Abs(uploadDir)
+	absUploadDir, err := filepath.Abs(audioUploadDir)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server configuration error"})
 		return
@@ -95,5 +96,66 @@ func DeleteFile(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "File deleted successfully",
 		"filename": filename,
+	})
+}
+
+func UploadBackgroundImage(c *gin.Context) {
+	// Get the uploaded file
+	file, err := c.FormFile("backgroundFile")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No file uploaded"})
+		return
+	}
+
+	// Validate file type
+	if !strings.HasPrefix(file.Header.Get("Content-Type"), "image/") {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Only image files are allowed"})
+		return
+	}
+
+	// Ensure upload directory exists
+	if err := os.MkdirAll(imageUploadDir, 0755); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+		return
+	}
+
+	// Remove existing background files
+	existingFiles, _ := filepath.Glob(filepath.Join(imageUploadDir, "background.*"))
+	for _, f := range existingFiles {
+		err := os.Remove(f)
+		if err != nil {
+			return
+		}
+	}
+
+	// Create the new background file with original extension
+	ext := filepath.Ext(file.Filename)
+	newFilename := "background" + ext
+	filePath := filepath.Join(imageUploadDir, newFilename)
+
+	// Save the file
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":       "Background uploaded successfully",
+		"backgroundUrl": "/assets/image/" + newFilename,
+	})
+}
+
+func GetCurrentBackground(c *gin.Context) {
+	// Look for any file named background.* in the image directory
+	files, err := filepath.Glob(filepath.Join(imageUploadDir, "background.*"))
+	if err != nil || len(files) == 0 {
+		c.JSON(http.StatusOK, gin.H{"backgroundUrl": ""})
+		return
+	}
+
+	// Return the first matching file
+	backgroundFile := filepath.Base(files[0])
+	c.JSON(http.StatusOK, gin.H{
+		"backgroundUrl": "/assets/image/" + backgroundFile,
 	})
 }

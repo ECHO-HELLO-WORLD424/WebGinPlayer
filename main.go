@@ -24,14 +24,19 @@ func main() {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*")
 
-	// Serve audio files from the music directory
+	// Serve assets from the assets directory
 	router.Static("/assets/music", "./assets/music")
 	router.Static("/assets/icon", "./assets/icon")
+	router.Static("/assets/image", "./assets/image") // Add this line
 
-	// Route for the main page
+	// Audio routes
 	router.GET("/", listAudioFile)
-	router.POST("/upload", filemanager.UploadFile)
-	router.DELETE("/delete/:filename", filemanager.DeleteFile)
+	router.POST("/upload", filemanager.UploadAudioFile)
+	router.DELETE("/delete/:filename", filemanager.DeleteAudioFile)
+
+	// Background image routes
+	router.POST("/upload/background", filemanager.UploadBackgroundImage)
+	router.GET("/background/current", filemanager.GetCurrentBackground)
 
 	// HTTP server
 	server := &http.Server{

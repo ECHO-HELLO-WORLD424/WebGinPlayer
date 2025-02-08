@@ -7,7 +7,7 @@ class FileManager {
 
     bindEvents() {
         // Handle file selection
-        this.uploadInput.addEventListener('change', (e) => this.handleFileUpload(e));
+        this.uploadInput.addEventListener('change', (e) => this.handleAudioUpload(e));
 
         // Handle delete buttons
         this.musicList.addEventListener('click', (e) => {
@@ -15,12 +15,12 @@ class FileManager {
             if (deleteBtn) {
                 const listItem = deleteBtn.closest('.music-list-item');
                 const filename = listItem.querySelector('.song-name').textContent;
-                void this.deleteFile(filename, listItem);
+                void this.deleteAudioFile(filename, listItem);
             }
         });
     }
 
-    async handleFileUpload(event) {
+    async handleAudioUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
 
@@ -50,7 +50,7 @@ class FileManager {
             }
 
             // Add new file to the list
-            this.addFileToList(result.filename);
+            this.addAudioToList(result.filename);
             this.uploadInput.value = ''; // Clear the input
 
         } catch (error) {
@@ -59,7 +59,7 @@ class FileManager {
         }
     }
 
-    async deleteFile(filename, listItem) {
+    async deleteAudioFile(filename, listItem) {
         if (!confirm(`Are you sure you want to delete ${filename}?`)) {
             return;
         }
@@ -85,7 +85,7 @@ class FileManager {
         }
     }
 
-    addFileToList(filename) {
+    addAudioToList(filename) {
         const li = document.createElement('li');
         li.className = 'music-list-item';
         li.setAttribute('assets-file', `/assets/music/${filename}`);

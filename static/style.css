@@ -89,10 +89,12 @@ body {
     margin: 24px auto;
     background-color: var(--mdc-theme-surface);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     padding: 24px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 10px outset rgba(128, 128, 128, 0.12);
 }
 
 .player-header {
@@ -201,6 +203,7 @@ h1 {
 .file-upload {
     padding: 16px 24px;
     border-bottom: 1px solid rgba(128, 128, 128, 0.12);
+    align-items: center;
 }
 
 .file-input {

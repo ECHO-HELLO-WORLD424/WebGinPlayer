@@ -2,31 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const audioPlayer = document.getElementById('audioPlayer');
     const musicList = document.getElementById('musicList');
     const canvas = document.getElementById('visualizer');
-    const themeToggle = document.querySelector('.theme-toggle');
-    const themeIcon = themeToggle.querySelector('i');
     const ctx = canvas.getContext('2d');
     let currentTrack = null;
     let audioContext;
     let analyser;
     let source;
     let animationId;
-
-    // Theme management
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        themeIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-    }
-
-    // Initialize theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-    });
 
     // Initialize Web Audio API
     function initAudio() {
@@ -70,10 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const gradient = ctx.createLinearGradient(0, height, 0, height - barHeight);
                 if (isDarkMode) {
                     gradient.addColorStop(0, '#7740c5');    // Dark theme primary
-                    gradient.addColorStop(1, '#03dac6');    // Dark theme secondary
+                    gradient.addColorStop(1, '#daa803');    // Dark theme secondary
                 } else {
                     gradient.addColorStop(0, '#6200ee');    // Light theme primary
-                    gradient.addColorStop(1, '#03dac6');    // Light theme secondary
+                    gradient.addColorStop(1, '#fbb103');    // Light theme secondary
                 }
 
                 ctx.fillStyle = gradient;
