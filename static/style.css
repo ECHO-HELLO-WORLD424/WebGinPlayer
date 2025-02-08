@@ -215,7 +215,7 @@ h1 {
 }
 
 .delete-btn {
-    background-color: var(--dark-background);
+    background-color: rgba(0, 0, 0, 0.1);
     cursor: pointer;
     border: none;
     width: 32px;
