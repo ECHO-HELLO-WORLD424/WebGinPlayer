@@ -42,6 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to draw the spectrum with theme-aware colors
     function drawSpectrum() {
+        if (!analyser) {
+            initAudio();
+        }
+
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
         const width = canvas.width;
@@ -52,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             animationId = requestAnimationFrame(animate);
             analyser.getByteFrequencyData(dataArray);
 
-            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+            const isDarkMode = document.documentElement.getAttribute('assets-theme') === 'dark';
 
             // Theme-aware background
             ctx.fillStyle = isDarkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -94,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     musicList.querySelectorAll('.music-list-item').forEach((item) => {
         // Add click event listener
         item.addEventListener('click', function() {
-            const audioFile = this.getAttribute('data-file');
+            const audioFile = this.getAttribute('assets-file');
             playTrack(audioFile);
             updateCurrentTrack(this);
         });
@@ -128,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             nextTrack = tracks[0];
         }
 
-        const audioFile = nextTrack.getAttribute('data-file');
+        const audioFile = nextTrack.getAttribute('assets-file');
         playTrack(audioFile);
         updateCurrentTrack(nextTrack);
     });

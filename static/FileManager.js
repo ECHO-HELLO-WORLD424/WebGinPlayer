@@ -33,7 +33,7 @@ class FileManager {
             return;
         }
 
-        // Create form data
+        // Create form assets
         const formData = new FormData();
         formData.append('audioFile', file);
 
@@ -88,7 +88,7 @@ class FileManager {
     addFileToList(filename) {
         const li = document.createElement('li');
         li.className = 'music-list-item';
-        li.setAttribute('data-file', `/data/music/${filename}`);
+        li.setAttribute('assets-file', `/assets/music/${filename}`);
 
         li.innerHTML = `
             <i class="material-icons">music_note</i>

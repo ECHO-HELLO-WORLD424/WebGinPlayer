@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	uploadDir = "./data/music"
+	uploadDir = "./assets/music"
 )
 
 func UploadFile(c *gin.Context) {

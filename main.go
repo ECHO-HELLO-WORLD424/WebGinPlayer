@@ -12,12 +12,21 @@ import (
 func main() {
 	router := gin.Default()
 
+	// Disable caching for static files during development
+	router.Use(func(c *gin.Context) {
+		c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+		c.Header("Pragma", "no-cache")
+		c.Header("Expires", "0")
+		c.Next()
+	})
+
 	// Serve static files (HTML, CSS, JS)
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*")
 
 	// Serve audio files from the music directory
-	router.Static("/data/music", "./data/music")
+	router.Static("/assets/music", "./assets/music")
+	router.Static("/assets/icon", "./assets/icon")
 
 	// Route for the main page
 	router.GET("/", listAudioFile)
@@ -41,7 +50,7 @@ func main() {
 
 func listAudioFile(c *gin.Context) {
 	// Get list of music files
-	files, err := filepath.Glob("data/music/*")
+	files, err := filepath.Glob("assets/music/*")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to list music files"})
 		return
