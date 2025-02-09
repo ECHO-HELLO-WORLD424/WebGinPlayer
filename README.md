@@ -1,4 +1,5 @@
 ## WebGinPlayer
+![playlist](./Playlist.png)
 ### What is it?
 - This is a web music player implemented with Go/Gin
 ### Features

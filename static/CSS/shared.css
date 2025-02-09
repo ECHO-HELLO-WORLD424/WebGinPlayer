@@ -55,6 +55,24 @@
     --mdc-theme-on-error: var(--dark-on-error);
 }
 
+h1 {
+    color: var(--mdc-theme-on-surface);
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+}
+
+h2 {
+    color: var(--mdc-theme-on-surface);
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+a {
+    text-decoration: none !important; /* Use !important to show underline for <a> */
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -62,24 +80,91 @@ body {
     background-color: var(--mdc-theme-background);
     color: var(--mdc-theme-on-background);
     transition: background-color 0.3s ease, color 0.3s ease;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    position: relative;
 }
 
-.theme-toggle {
-    position: absolute;
+/* Vignette effect overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+            circle,
+            transparent 40%,
+            rgba(0, 0, 0, 0.4) 100%
+    );
+    pointer-events: none; /* Allows clicking through the overlay */
+    z-index: 1;
+}
+
+.toolbar {
+    justify-content: space-around;
+    display: flex;
     top: 24px;
-    right: 24px;
+    align-self: center;
+    margin: 24px auto;
+    background-color: rgba(128, 128, 128, 20%);
+    max-width: 930px;
+    border-radius: 8px;
+    overflow-x: visible;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--mdc-theme-primary) transparent;
+    transition: background-color 0.3s ease;
+    padding: 0 8px; /* Add padding on the sides */
+}
+
+.toolbar:hover {
+    background-color: rgba(128, 128, 128, 30%);
+}
+
+.toolbar-btn {
     background: none;
+    color: var(--mdc-theme-on-primary);
     border: none;
-    color: var(--mdc-theme-on-background);
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-.theme-toggle:hover {
-    background-color: rgba(128, 128, 128, 0.1);
+.toolbar-btn:hover {
+    color: var(--mdc-theme-secondary);
+}
+
+.toggle-theme {
+    order: 1;
+    color: var(--mdc-theme-on-surface);
+}
+
+.toggle-theme:hover {
+    transform: scale(1.2);
+}
+
+.back-button {
+    color: var(--mdc-theme-on-surface);
+}
+
+.back-button:hover {
+    transform: scaleX(1.2);
+}
+
+.setting-btn {
+    color: var(--mdc-theme-on-surface);
+}
+
+.setting-btn:hover {
+    transform: rotate(90deg);
 }

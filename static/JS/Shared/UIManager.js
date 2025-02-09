@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function()  {
-    const themeToggle = document.querySelector('.theme-toggle');
+    const themeToggle = document.querySelector('.toggle-theme');
     const themeIcon = themeToggle.querySelector('i');
 
     // Theme management

@@ -101,9 +101,11 @@ func (h *Handler) GetPlaylist(c *gin.Context) {
 	playlistId := c.Param("id")
 	var playlist *Playlist
 
+	var index int
 	for i := range h.playlists {
 		if h.playlists[i].ID == playlistId {
 			playlist = &h.playlists[i]
+			index = i
 			break
 		}
 	}
@@ -127,6 +129,13 @@ func (h *Handler) GetPlaylist(c *gin.Context) {
 		if ext := filepath.Ext(file); ext == ".wav" || ext == ".flac" {
 			cleanPlaylistFiles = append(cleanPlaylistFiles, filepath.Base(file))
 		}
+	}
+
+	// Update song list on fetch
+	h.playlists[index].Songs = cleanPlaylistFiles
+	err = h.savePlaylists()
+	if err != nil {
+		return
 	}
 
 	c.HTML(http.StatusOK, "Playlist.html", gin.H{

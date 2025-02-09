@@ -9,15 +9,21 @@
     <link rel="stylesheet" href="/static/CSS/shared.css">
 </head>
 <body>
-<button class="theme-toggle" aria-label="Toggle dark mode">
-    <i class="material-icons">dark_mode</i>
-</button>
+
+<div class="toolbar">
+    <a href="/playlist" class="toolbar-btn back-button">
+        <i class="material-icons">arrow_back</i>
+    </a>
+    <button class="toolbar-btn setting-btn">
+        <i class="material-icons">settings</i>
+    </button>
+    <button class="toolbar-btn toggle-theme" aria-label="Toggle dark mode">
+        <i class="material-icons">dark_mode</i>
+    </button>
+</div>
 
 <div class="player-container">
     <div class="player-header">
-        <a href="/playlist" class="back-button">
-            <i class="material-icons">arrow_back</i>
-        </a>
         <h1>{{.playlistName}}</h1>
     </div>
 
@@ -75,12 +81,7 @@
 <script src="/static/JS/Playlist/BackgroundManager.js"></script>
 <script src="/static/JS/Playlist/FileManager.js"></script>
 <script src="/static/JS/Playlist/AudioPlayer.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize all music lists as one combined list for the FileManager
-        const musicList = document.querySelector('.music-sections');
-        new FileManager(musicList);
-    });
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 </body>
 </html>

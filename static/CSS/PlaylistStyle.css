@@ -2,6 +2,7 @@
 
 .player-container {
     max-width: 900px;
+    max-height: 900px;
     margin: 24px auto;
     background-color: var(--mdc-theme-surface);
     border-radius: 8px;
@@ -10,7 +11,10 @@
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 10px outset rgba(128, 128, 128, 0.12);
+    overflow: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--mdc-theme-primary) transparent;
 }
 
 .player-header {
@@ -18,13 +22,6 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
-}
-
-h1 {
-    color: var(--mdc-theme-on-surface);
-    font-size: 24px;
-    font-weight: 500;
-    margin: 0;
 }
 
 .player-controls {

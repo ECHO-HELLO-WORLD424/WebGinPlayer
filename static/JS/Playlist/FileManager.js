@@ -117,3 +117,9 @@ class FileManager {
         this.musicList.appendChild(li);
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all music lists as one combined list for the FileManager
+    const musicList = document.querySelector('.music-sections');
+    new FileManager(musicList);
+});
