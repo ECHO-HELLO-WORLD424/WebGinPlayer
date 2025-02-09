@@ -120,16 +120,8 @@ func (h *Handler) GetPlaylist(c *gin.Context) {
 		return
 	}
 
-	// Get shared music files
-	sharedFiles, err := filepath.Glob(filepath.Join(musicBaseDir, "shared", "*"))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to list shared files"})
-		return
-	}
-
 	// Clean up file paths
 	var cleanPlaylistFiles []string
-	var cleanSharedFiles []string
 
 	for _, file := range playlistFiles {
 		if ext := filepath.Ext(file); ext == ".wav" || ext == ".flac" {
@@ -137,17 +129,10 @@ func (h *Handler) GetPlaylist(c *gin.Context) {
 		}
 	}
 
-	for _, file := range sharedFiles {
-		if ext := filepath.Ext(file); ext == ".wav" || ext == ".flac" {
-			cleanSharedFiles = append(cleanSharedFiles, filepath.Base(file))
-		}
-	}
-
 	c.HTML(http.StatusOK, "Playlist.html", gin.H{
 		"playlistId":    playlist.ID,
 		"playlistName":  playlist.Name,
 		"playlistFiles": cleanPlaylistFiles,
-		"sharedFiles":   cleanSharedFiles,
 	})
 }
 

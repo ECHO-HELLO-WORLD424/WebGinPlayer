@@ -60,24 +60,6 @@
                 </ul>
             </div>
             {{end}}
-
-            <!-- Shared songs -->
-            {{if .sharedFiles}}
-            <div class="music-section">
-                <h2>Shared Songs</h2>
-                <ul class="shared-music-list">
-                    {{range .sharedFiles}}
-                    <li class="music-list-item" data-file="/assets/music/shared/{{.}}" data-shared="true">
-                        <i class="material-icons">music_note</i>
-                        <span class="song-name">{{.}}</span>
-                        <button class="delete-btn" title="Delete">
-                            <i class="material-icons">delete</i>
-                        </button>
-                    </li>
-                    {{end}}
-                </ul>
-            </div>
-            {{end}}
         </div>
 
         {{if and (not .playlistFiles) (not .sharedFiles)}}
