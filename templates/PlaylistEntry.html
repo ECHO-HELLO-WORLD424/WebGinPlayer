@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <link rel="icon" type="image/x-ico" href="/assets/icon/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Playlists - Groove Player</title>
+    <link rel="stylesheet" href="/CSS/PlaylistEntryStyle.css">
+</head>
+<body>
+<!-- Create Playlist Modal -->
+<div id="createPlaylistModal" class="modal">
+    <div class="modal-content">
+        <h2>Create New Playlist</h2>
+        <form id="createPlaylistForm">
+            <div class="form-group">
+                <label for="playlistName">Playlist Name</label>
+                <input type="text" id="playlistName" required>
+            </div>
+            <div class="form-group">
+                <label for="playlistDescription">Description</label>
+                <textarea id="playlistDescription" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="playlistManager.closeModal()">Cancel</button>
+                <button type="submit" class="btn">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="playlists-container">
+    <h1>My Playlists</h1>
+
+    <div class="playlist-grid">
+        {{range .playlists}}
+        <div class="playlist-card" data-playlist-id="{{.ID}}">
+            <div class="playlist-card-header">
+                <h2>{{.Name}}</h2>
+                <button class="delete-btn" onclick="playlistManager.handleDeletePlaylist('{{.ID}}')" title="Delete playlist">
+                    <i class="material-icons">delete</i>
+                </button>
+            </div>
+            <p class="description">{{.Description}}</p>
+            <p class="song-count">
+                <i class="material-icons">music_note</i>
+                {{len .Songs}} songs
+            </p>
+            <a href="/playlist/{{.ID}}" class="btn">
+                <i class="material-icons">play_arrow</i>
+                Open Playlist
+            </a>
+        </div>
+        {{end}}
+
+        <div class="playlist-card new-playlist">
+            <h2>Create New Playlist</h2>
+            <button onclick="playlistManager.openModal()" class="btn">+</button>
+        </div>
+    </div>
+</div>
+
+<script src="/static/JS/PlaylistEntry/PlaylistManager.js"></script>
+<script>
+    // Initialize the playlist manager
+    const playlistManager = new PlaylistManager();
+</script>
+</body>
+</html>

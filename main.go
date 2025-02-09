@@ -22,7 +22,7 @@ const (
 	imageRootPath     = "./assets/image"
 	// HTML pages
 	globalHTMLPattern = "templates/*.html"
-	playListPage      = "playlist.html"
+	playListPage      = "Playlist.html"
 	// CSS & JS files
 	relativeCSSPath    = "/static/CSS"
 	rootCSSPath        = "./static/CSS"
