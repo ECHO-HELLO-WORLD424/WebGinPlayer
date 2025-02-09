@@ -9,11 +9,18 @@ import (
 )
 
 const (
-	audioUploadDir = "./assets/music"
-	imageUploadDir = "./assets/image"
+	musicBaseDir = "./assets/music"
+	imageBaseDir = "./assets/image"
 )
 
 func UploadAudioFile(c *gin.Context) {
+	// Get the playlist ID from the form data
+	playlistId := c.PostForm("playlistId")
+	if playlistId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No playlist ID provided"})
+		return
+	}
+
 	// Get the uploaded file
 	file, err := c.FormFile("audioFile")
 	if err != nil {
@@ -28,18 +35,19 @@ func UploadAudioFile(c *gin.Context) {
 		return
 	}
 
-	// Ensure upload directory exists
-	if err := os.MkdirAll(audioUploadDir, 0755); err != nil {
+	// Create playlist-specific directory if it doesn't exist
+	uploadDir := filepath.Join(musicBaseDir, playlistId)
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
 		return
 	}
 
-	// Create the file path
+	// Create the file path within the playlist directory
 	filename := filepath.Base(file.Filename)
-	filePrefix := filepath.Join(audioUploadDir, filename)
+	filePath := filepath.Join(uploadDir, filename)
 
 	// Save the file
-	if err := c.SaveUploadedFile(file, filePrefix); err != nil {
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
 		return
 	}
@@ -51,11 +59,12 @@ func UploadAudioFile(c *gin.Context) {
 }
 
 func DeleteAudioFile(c *gin.Context) {
+	// Get playlist ID and filename from parameters
+	playlistId := c.Param("playlistId")
 	filename := c.Param("filename")
 
-	// Validate filename
-	if filename == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No filename provided"})
+	if playlistId == "" || filename == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing playlist ID or filename"})
 		return
 	}
 
@@ -66,8 +75,8 @@ func DeleteAudioFile(c *gin.Context) {
 		return
 	}
 
-	// Get absolute path for both the upload directory and the target file
-	absUploadDir, err := filepath.Abs(audioUploadDir)
+	// Get absolute paths
+	absUploadDir, err := filepath.Abs(filepath.Join(musicBaseDir, playlistId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Server configuration error"})
 		return
@@ -75,7 +84,7 @@ func DeleteAudioFile(c *gin.Context) {
 
 	targetPath := filepath.Join(absUploadDir, cleanFilename)
 
-	// Verify the target file is within the upload directory
+	// Verify the target file is within the playlist directory
 	if !strings.HasPrefix(targetPath, absUploadDir) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid file path"})
 		return
@@ -100,6 +109,13 @@ func DeleteAudioFile(c *gin.Context) {
 }
 
 func UploadBackgroundImage(c *gin.Context) {
+	// Get the playlist ID from the form data
+	playlistId := c.PostForm("playlistId")
+	if playlistId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No playlist ID provided"})
+		return
+	}
+
 	// Get the uploaded file
 	file, err := c.FormFile("backgroundFile")
 	if err != nil {
@@ -113,17 +129,18 @@ func UploadBackgroundImage(c *gin.Context) {
 		return
 	}
 
-	// Ensure upload directory exists
-	if err := os.MkdirAll(imageUploadDir, 0755); err != nil {
+	// Create playlist-specific image directory if it doesn't exist
+	uploadDir := filepath.Join(imageBaseDir, playlistId)
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
 		return
 	}
 
-	// Remove existing background files
-	existingFiles, _ := filepath.Glob(filepath.Join(imageUploadDir, "background.*"))
+	// Remove existing background files for this playlist
+	existingFiles, _ := filepath.Glob(filepath.Join(uploadDir, "background.*"))
 	for _, f := range existingFiles {
-		err := os.Remove(f)
-		if err != nil {
+		if err := os.Remove(f); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove existing background"})
 			return
 		}
 	}
@@ -131,7 +148,7 @@ func UploadBackgroundImage(c *gin.Context) {
 	// Create the new background file with original extension
 	ext := filepath.Ext(file.Filename)
 	newFilename := "background" + ext
-	filePath := filepath.Join(imageUploadDir, newFilename)
+	filePath := filepath.Join(uploadDir, newFilename)
 
 	// Save the file
 	if err := c.SaveUploadedFile(file, filePath); err != nil {
@@ -141,13 +158,21 @@ func UploadBackgroundImage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":       "Background uploaded successfully",
-		"backgroundUrl": "/assets/image/" + newFilename,
+		"backgroundUrl": filepath.Join("/assets/image", playlistId, newFilename),
 	})
 }
 
 func GetCurrentBackground(c *gin.Context) {
-	// Look for any file named background.* in the image directory
-	files, err := filepath.Glob(filepath.Join(imageUploadDir, "background.*"))
+	// Get the playlist ID from the URL parameter
+	playlistId := c.Param("playlistId")
+	if playlistId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No playlist ID provided"})
+		return
+	}
+
+	// Look for any file named background.* in the playlist's image directory
+	uploadDir := filepath.Join(imageBaseDir, playlistId)
+	files, err := filepath.Glob(filepath.Join(uploadDir, "background.*"))
 	if err != nil || len(files) == 0 {
 		c.JSON(http.StatusOK, gin.H{"backgroundUrl": ""})
 		return
@@ -156,6 +181,6 @@ func GetCurrentBackground(c *gin.Context) {
 	// Return the first matching file
 	backgroundFile := filepath.Base(files[0])
 	c.JSON(http.StatusOK, gin.H{
-		"backgroundUrl": "/assets/image/" + backgroundFile,
+		"backgroundUrl": filepath.Join("/assets/image", playlistId, backgroundFile),
 	})
 }

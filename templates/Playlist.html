@@ -4,8 +4,9 @@
     <link rel="icon" type="image/x-ico" href="/assets/icon/favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Music Player</title>
-    <link rel="stylesheet" href="/CSS/PlaylistStyle.css">
+    <title>{{.playlistName}} - Groove Player</title>
+    <link rel="stylesheet" href="/static/CSS/PlaylistStyle.css">
+    <link rel="stylesheet" href="/static/CSS/shared.css">
 </head>
 <body>
 <button class="theme-toggle" aria-label="Toggle dark mode">
@@ -14,7 +15,10 @@
 
 <div class="player-container">
     <div class="player-header">
-        <h1>Groove Player</h1>
+        <a href="/playlist" class="back-button">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h1>{{.playlistName}}</h1>
     </div>
 
     <div class="player-controls">
@@ -38,27 +42,61 @@
             </label>
         </div>
 
-        <ul id="musicList">
-            {{range .musicFiles}}
-            <li class="music-list-item" assets-file="/assets/music/{{.}}">
-                <i class="material-icons">music_note</i>
-                <span class="song-name">{{.}}</span>
-                <button class="delete-btn" title="Delete">
-                    <i class="material-icons">delete</i>
-                </button>
-            </li>
+        <div class="music-sections">
+            <!-- Playlist-specific songs -->
+            {{if .playlistFiles}}
+            <div class="music-section">
+                <h2>Playlist Songs</h2>
+                <ul id="musicList">
+                    {{range .playlistFiles}}
+                    <li class="music-list-item" data-file="/assets/music/{{$.playlistId}}/{{.}}" data-shared="false">
+                        <i class="material-icons">music_note</i>
+                        <span class="song-name">{{.}}</span>
+                        <button class="delete-btn" title="Delete">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
             {{end}}
-        </ul>
 
+            <!-- Shared songs -->
+            {{if .sharedFiles}}
+            <div class="music-section">
+                <h2>Shared Songs</h2>
+                <ul class="shared-music-list">
+                    {{range .sharedFiles}}
+                    <li class="music-list-item" data-file="/assets/music/shared/{{.}}" data-shared="true">
+                        <i class="material-icons">music_note</i>
+                        <span class="song-name">{{.}}</span>
+                        <button class="delete-btn" title="Delete">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+            {{end}}
+        </div>
+
+        {{if and (not .playlistFiles) (not .sharedFiles)}}
+        <div class="empty-playlist">
+            <p>No songs in this playlist yet.</p>
+            <p>Upload some music files or add from shared library to get started!</p>
+        </div>
+        {{end}}
     </div>
 </div>
+
 <script src="/static/JS/Shared/UIManager.js"></script>
 <script src="/static/JS/Playlist/BackgroundManager.js"></script>
 <script src="/static/JS/Playlist/FileManager.js"></script>
 <script src="/static/JS/Playlist/AudioPlayer.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const musicList = document.getElementById('musicList');
+        // Initialize all music lists as one combined list for the FileManager
+        const musicList = document.querySelector('.music-sections');
         new FileManager(musicList);
     });
 </script>

@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let source;
     let animationId;
 
-    // Initialize Web Audio API
     function initAudio() {
         if (!audioContext) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Function to draw the spectrum with theme-aware colors
     function drawSpectrum() {
         if (!analyser) {
             initAudio();
@@ -37,9 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
             animationId = requestAnimationFrame(animate);
             analyser.getByteFrequencyData(dataArray);
 
-            const isDarkMode = document.documentElement.getAttribute('assets-theme') === 'dark';
+            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
 
-            // Theme-aware background
             ctx.fillStyle = isDarkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, width, height);
 
@@ -47,14 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
             for(let i = 0; i < bufferLength; i++) {
                 const barHeight = dataArray[i] * 0.7;
 
-                // Theme-aware gradient
                 const gradient = ctx.createLinearGradient(0, height, 0, height - barHeight);
                 if (isDarkMode) {
-                    gradient.addColorStop(0, '#7740c5');    // Dark theme primary
-                    gradient.addColorStop(1, '#daa803');    // Dark theme secondary
+                    gradient.addColorStop(0, '#7740c5');
+                    gradient.addColorStop(1, '#daa803');
                 } else {
-                    gradient.addColorStop(0, '#6200ee');    // Light theme primary
-                    gradient.addColorStop(1, '#fbb103');    // Light theme secondary
+                    gradient.addColorStop(0, '#6200ee');
+                    gradient.addColorStop(1, '#fbb103');
                 }
 
                 ctx.fillStyle = gradient;
@@ -66,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
         animate();
     }
 
-    // Update the currently playing track UI
     function updateCurrentTrack(clickedItem) {
         if (currentTrack) {
             currentTrack.classList.remove('playing');
@@ -75,17 +70,15 @@ document.addEventListener('DOMContentLoaded', function() {
         currentTrack = clickedItem;
     }
 
-    // Add click event listeners to playlist items
+    // Update music list event listeners to handle both shared and playlist-specific files
     musicList.querySelectorAll('.music-list-item').forEach((item) => {
-        // Add click event listener
         item.addEventListener('click', function() {
-            const audioFile = this.getAttribute('assets-file');
+            const audioFile = this.getAttribute('data-file');
             playTrack(audioFile);
             updateCurrentTrack(this);
         });
     });
 
-    // Function to play a track
     function playTrack(audioFile) {
         if (animationId) {
             cancelAnimationFrame(animationId);
@@ -100,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Play next track when current track ends
     audioPlayer.addEventListener('ended', function() {
         const tracks = musicList.querySelectorAll('.music-list-item');
         let nextTrack;
@@ -113,12 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
             nextTrack = tracks[0];
         }
 
-        const audioFile = nextTrack.getAttribute('assets-file');
+        const audioFile = nextTrack.getAttribute('data-file');
         playTrack(audioFile);
         updateCurrentTrack(nextTrack);
     });
 
-    // Handle play/pause visualization
     audioPlayer.addEventListener('pause', function() {
         if (animationId) {
             cancelAnimationFrame(animationId);

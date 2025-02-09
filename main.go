@@ -1,11 +1,11 @@
 package main
 
 import (
+	"WebPlayer/src/Playlist"
 	"WebPlayer/src/filemanager"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"path/filepath"
 	"slices"
 	"time"
 )
@@ -22,12 +22,11 @@ const (
 	imageRootPath     = "./assets/image"
 	// HTML pages
 	globalHTMLPattern = "templates/*.html"
-	playListPage      = "Playlist.html"
 	// CSS & JS files
 	relativeCSSPath    = "/static/CSS"
 	rootCSSPath        = "./static/CSS"
-	relativePlaylistJS = "/static/JS/Playlist"
-	rootPlaylistJS     = "./static/JS/Playlist"
+	relativePlaylistJS = "/static/JS"
+	rootPlaylistJS     = "./static/JS"
 )
 
 func main() {
@@ -35,24 +34,32 @@ func main() {
 		"127.0.0.1:8080",
 		"0.0.0.0:8080",
 	}
-	playlistRouter := createPlaylistRouter(expectedHosts)
 
-	// HTTP playlistServer
-	playlistServer := &http.Server{
+	// Initialize playlist handler
+	playlistHandler, err := Playlist.NewHandler()
+	if err != nil {
+		log.Fatal("Failed to initialize playlist handler:", err)
+		return
+	}
+
+	playlistRouter := createPlaylistRouter(expectedHosts, playlistHandler)
+
+	// HTTP server
+	server := &http.Server{
 		Addr:         ":8080",
 		Handler:      playlistRouter,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 	}
 
-	err := playlistServer.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 }
 
-func createPlaylistRouter(expectedHost []string) *gin.Engine {
+func createPlaylistRouter(expectedHost []string, playlistHandler *Playlist.Handler) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(func(c *gin.Context) {
@@ -62,7 +69,7 @@ func createPlaylistRouter(expectedHost []string) *gin.Engine {
 		}
 		// Security Headers
 		c.Header("X-Frame-Options", "DENY")
-		c.Header("Content-Security-Policy", "default-src 'self'; connect-src *; font-src *; script-src-elem * 'unsafe-inline'; img-src * data:; style-src * 'unsafe-inline';")
+		c.Header("Content-Security-Policy", " connect-src *; font-src *; script-src-elem * 'unsafe-inline'; img-src * data:; style-src * 'unsafe-inline';")
 		c.Header("X-XSS-Protection", "1; mode=block")
 		c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
 		c.Header("Referrer-Policy", "strict-origin")
@@ -74,45 +81,27 @@ func createPlaylistRouter(expectedHost []string) *gin.Engine {
 		c.Next()
 	})
 
-	// Serve static files (HTML, CSS, JS)
+	// Serve static files
 	router.Static(relativeCSSPath, rootCSSPath)
 	router.Static(relativePlaylistJS, rootPlaylistJS)
 	router.LoadHTMLGlob(globalHTMLPattern)
 
-	// Serve assets from the assets directory
+	// Serve assets
 	router.Static(musicRelativePath, musicRootPath)
 	router.Static(iconRelativePath, iconRootPath)
 	router.Static(imageRelativePath, imageRootPath)
 
-	// Audio routes
-	router.GET("/", listAudioFile)
-	router.POST("/upload", filemanager.UploadAudioFile)
-	router.DELETE("/delete/:filename", filemanager.DeleteAudioFile)
+	// Playlist routes
+	router.GET("/playlist", playlistHandler.ListPlaylists)
+	router.GET("/playlist/:id", playlistHandler.GetPlaylist)
+	router.POST("/playlist/create", playlistHandler.CreatePlaylist)
+	router.DELETE("/playlist/:id", playlistHandler.DeletePlaylist)
 
-	// Background image routes
+	// File management routes
+	router.POST("/upload", filemanager.UploadAudioFile)
+	router.DELETE("/delete/:playlistId/:filename", filemanager.DeleteAudioFile)
 	router.POST("/upload/background", filemanager.UploadBackgroundImage)
-	router.GET("/background/current", filemanager.GetCurrentBackground)
+	router.GET("/background/:playlistId", filemanager.GetCurrentBackground)
 
 	return router
-}
-
-func listAudioFile(c *gin.Context) {
-	// Get list of music files
-	files, err := filepath.Glob("assets/music/*")
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to list music files"})
-		return
-	}
-
-	// Clean up file paths for frontend
-	var musicFiles []string
-	for _, file := range files {
-		if filepath.Ext(file) == ".wav" || filepath.Ext(file) == ".flac" {
-			musicFiles = append(musicFiles, filepath.Base(file))
-		}
-	}
-
-	c.HTML(http.StatusOK, playListPage, gin.H{
-		"musicFiles": musicFiles,
-	})
 }

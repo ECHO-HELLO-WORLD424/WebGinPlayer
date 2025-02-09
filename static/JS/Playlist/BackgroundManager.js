@@ -1,8 +1,14 @@
 class BackgroundManager {
     constructor() {
         this.backgroundInput = document.getElementById('backgroundInput');
+        this.playlistId = this.getPlaylistIdFromUrl();
         this.bindEvents();
         this.loadBackground();
+    }
+
+    getPlaylistIdFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[pathParts.length - 1];
     }
 
     bindEvents() {
@@ -13,16 +19,15 @@ class BackgroundManager {
         const file = event.target.files[0];
         if (!file) return;
 
-        // Validate file type
         if (!file.type.startsWith('image/')) {
             alert('Please select an image file');
-            this.backgroundInput.value = ''; // Clear the input
+            this.backgroundInput.value = '';
             return;
         }
 
-        // Create form data
         const formData = new FormData();
         formData.append('backgroundFile', file);
+        formData.append('playlistId', this.playlistId);
 
         try {
             const response = await fetch('/upload/background', {
@@ -37,9 +42,8 @@ class BackgroundManager {
                 return;
             }
 
-            // Update background immediately after successful upload
             this.loadBackground();
-            this.backgroundInput.value = ''; // Clear the input
+            this.backgroundInput.value = '';
 
         } catch (error) {
             console.error('Upload error:', error);
@@ -49,7 +53,7 @@ class BackgroundManager {
 
     async loadBackground() {
         try {
-            const response = await fetch('/background/current');
+            const response = await fetch(`/background/${this.playlistId}`);
             if (response.ok) {
                 const data = await response.json();
                 if (data.backgroundUrl) {
@@ -61,8 +65,3 @@ class BackgroundManager {
         }
     }
 }
-
-// Initialize background manager when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new BackgroundManager();
-});

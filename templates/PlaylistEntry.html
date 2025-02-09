@@ -5,10 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Playlists - Groove Player</title>
-    <link rel="stylesheet" href="/CSS/PlaylistEntryStyle.css">
+    <link rel="stylesheet" href="/static/CSS/PlaylistEntryStyle.css">
+    <link rel="stylesheet" href="/static/CSS/shared.css">
 </head>
+
+<button class="theme-toggle" aria-label="Toggle dark mode">
+    <i class="material-icons">dark_mode</i>
+</button>
+
 <body>
-<!-- Create Playlist Modal -->
 <div id="createPlaylistModal" class="modal">
     <div class="modal-content">
         <h2>Create New Playlist</h2>
@@ -60,6 +65,7 @@
     </div>
 </div>
 
+<script src="/static/JS/Shared/UIManager.js"></script>
 <script src="/static/JS/PlaylistEntry/PlaylistManager.js"></script>
 <script>
     // Initialize the playlist manager
