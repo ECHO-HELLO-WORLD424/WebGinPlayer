@@ -7,6 +7,7 @@
     height: 600px;
     margin: 24px auto;
     background-color: var(--mdc-theme-surface);
+    color: var(--mdc-theme-surface);
     border-radius: 8px;
     padding: 24px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;

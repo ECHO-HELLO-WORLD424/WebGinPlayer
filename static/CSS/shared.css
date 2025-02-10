@@ -83,7 +83,6 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-attachment: fixed;
     min-height: 100vh;
     overflow: hidden;
 }
@@ -91,7 +90,6 @@ body {
 
 .toolbar {
     position: relative;
-    top: 24px;
     justify-content: space-around;
     display: flex;
     align-self: center;
