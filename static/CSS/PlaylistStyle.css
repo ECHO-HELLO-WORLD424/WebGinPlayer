@@ -1,6 +1,8 @@
 @import "shared.css";
 
 .player-container {
+    position: relative;
+    top: 24px;
     max-width: 900px;
     max-height: 900px;
     margin: 24px auto;

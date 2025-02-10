@@ -86,6 +86,7 @@ body {
     background-attachment: fixed;
     min-height: 100vh;
     position: relative;
+    overflow: hidden;
 }
 
 /* Vignette effect overlay */
@@ -106,16 +107,17 @@ body::before {
 }
 
 .toolbar {
+    position: relative;
+    top: 24px;
     justify-content: space-around;
     display: flex;
-    top: 24px;
     align-self: center;
     margin: 24px auto;
     background-color: rgba(128, 128, 128, 20%);
     max-width: 930px;
     border-radius: 8px;
-    overflow-x: visible;
-    overflow-y: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: var(--mdc-theme-primary) transparent;
