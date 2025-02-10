@@ -4,7 +4,8 @@
     position: relative;
     top: 24px;
     max-width: 900px;
-    max-height: 900px;
+    height: calc(100vh - 120px); /* Set a dynamic height based on viewport */
+    max-height: 600px;
     margin: 24px auto;
     background-color: var(--mdc-theme-surface);
     border-radius: 8px;
@@ -13,10 +14,13 @@
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    overflow: auto;
+    overflow-y: auto; /* Explicitly set vertical overflow */
+    overflow-x: hidden; /* Prevent horizontal scroll */
     scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: var(--mdc-theme-primary) transparent;
+    display: flex;
+    flex-direction: column;
 }
 
 .player-header {
