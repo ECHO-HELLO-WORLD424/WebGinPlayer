@@ -4,8 +4,7 @@
     position: relative;
     top: 24px;
     max-width: 900px;
-    height: calc(100vh - 120px); /* Set a dynamic height based on viewport */
-    max-height: 600px;
+    height: 600px;
     margin: 24px auto;
     background-color: var(--mdc-theme-surface);
     border-radius: 8px;
