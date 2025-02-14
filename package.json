@@ -1,24 +1,85 @@
 {
   "name": "webplayer",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "author": "patrick_echo_hello_world",
+  "description": "WebGinPlayer Desktop Application",
+  "main": "electron/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "build": "go build -o music-player-server && electron-builder",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ECHO-HELLO-WORLD424/WebGinPlayer.git"
+  "build": {
+    "appId": "com.musicplayer.app",
+    "productName": "GinPlayer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "assets/**/**/**/*",
+      "static/**/*",
+      "templates/**/*",
+      "data/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "music-player-server",
+        "to": "music-player-server"
+      },
+      {
+        "from": "templates",
+        "to": "templates"
+      },
+      {
+        "from": "static",
+        "to": "static"
+      },
+      {
+        "from": "assets",
+        "to": "assets"
+      },
+      {
+        "from": "data",
+        "to": "data"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon/icon.png"
+    },
+    "mac": {
+      "category": "Audio",
+      "target": "dmg",
+      "icon": "assets/icon/icon.png"
+    },
+    "linux": {
+      "category": "Audio",
+      "target": "AppImage",
+      "icon": "assets/icon/icon.png"
+    }
   },
   "dependencies": {
     "@mui/icons-material": "^6.4.3",
     "@mui/material": "^6.4.3",
+    "electron-squirrel-startup": "^1.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.6.1",
+    "@electron-forge/maker-deb": "^7.6.1",
+    "@electron-forge/maker-rpm": "^7.6.1",
+    "@electron-forge/maker-squirrel": "^7.6.1",
+    "@electron-forge/maker-zip": "^7.6.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.1",
+    "@electron-forge/plugin-fuses": "^7.6.1",
+    "@electron/fuses": "^1.8.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "electron": "34.1.1",
+    "electron-builder": "^25.1.8",
     "typescript": "^5.0.0"
   },
   "private": true

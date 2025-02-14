@@ -31,8 +31,10 @@ const (
 
 func main() {
 	expectedHosts := []string{
-		"127.0.0.1:8080",
-		"0.0.0.0:8080",
+		"127.0.0.1:8081",
+		"localhost:8081",
+		"0.0.0.0:8081",
+		"::1:8081",
 	}
 
 	// Initialize playlist handler
@@ -46,7 +48,7 @@ func main() {
 
 	// HTTP server
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":8081",
 		Handler:      playlistRouter,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
